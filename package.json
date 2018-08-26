@@ -6,7 +6,7 @@
   "scripts": {
     "start": "nodemon --watch app.js"
   },
-  "author": "",
+  "author": "Ainslie Hsu",
   "license": "ISC",
   "dependencies": {
     "twitter": "^1.7.1"
