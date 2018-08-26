@@ -1,14 +1,47 @@
-const express = require('express');
-const app = express();
-const request = require('request');
+const Twitter = require('twitter');
+const config = require('./config.js');
+const client = new Twitter(config);
 
-app.get('/', (req, res) => res.send('Hello World!'))
+let searchParams = {
+  q: 'baby elephants',
+  count: 3,
+  lang: 'en',
+};
 
-app.get('/api/twitter', (req, res) => {
-  request(`https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=twitterapi&count=2`, function (error, response, body) {
-    console.log(JSON.parse(body));
-    res.send(JSON.parse(body));
-  });
+client.get('search/tweets', searchParams, function(err, data, response) {
+  if (!err) {
+    (async function anon() {
+      for (let i = 0; i < data.statuses.length; i++) {
+        let retweetParams = {
+          id: data.statuses[i].id_str,
+        };
+        await (function() {
+          client.post('statuses/retweet', retweetParams, function(err, data, response) {
+            if (!err) {
+              console.log(`Retweeted https://api.twitter.com/1.1/statuses/retweet/${retweetParams.id}.json`)
+            } else {
+              console.log(err);
+            }
+          });
+        })();
+      }
+    })();
+
+    // data.statuses.forEach(element => {
+    //   let id = {
+    //     id: element.id_str,
+    //   }
+    //   client.post('statuses/retweet', id, function(err, data, response) {
+    //     console.log(id.id)
+    //     if (!err) {
+    //       console.log(`Retweeted https://api.twitter.com/1.1/statuses/retweet/${id.id}.json`)
+    //     } else {
+    //       console.log(err);
+    //     }
+    //   });
+    // });
+
+  } else {
+    console.log(err);
+  }
 });
-
-app.listen(3000, () => console.log('Example app listening on port 3000!'))

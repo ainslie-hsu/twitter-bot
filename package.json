@@ -4,13 +4,11 @@
   "description": "Nodejs Twitter Bot",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon --watch index.js"
+    "start": "nodemon --watch app.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.16.3",
-    "request": "^2.88.0",
     "twitter": "^1.7.1"
   }
 }
